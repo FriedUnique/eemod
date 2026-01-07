@@ -1,0 +1,8 @@
+{
+  "item.eemod.wire_item": "Wire",
+
+
+  "block.eemod.wire_block": "Wire Block",
+  "block.eemod.debug_voltage_source": "Debug Voltage Source"
+
+}

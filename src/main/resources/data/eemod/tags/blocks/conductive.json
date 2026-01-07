@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "eemod:wire_block",
+    "eemod:debug_voltage_source"
+  ]
+}

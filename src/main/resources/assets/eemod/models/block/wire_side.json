@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "wire": "minecraft:block/iron_block",
+    "particle": "minecraft:block/iron_block"
+  },
+  "elements": [
+    {
+      "from": [7, 7, 0],
+      "to": [9, 9, 7],
+      "faces": {
+        "up":    {"uv": [0, 0, 16, 16], "texture": "#wire", "rotation": 90},
+        "down":  {"uv": [0, 0, 16, 16], "texture": "#wire", "rotation": 90},
+        "west":  {"uv": [0, 0, 16, 16], "texture": "#wire", "rotation": 90},
+        "east":  {"uv": [0, 0, 16, 16], "texture": "#wire", "rotation": 90},
+        "north": {"uv": [0, 0, 16, 16], "texture": "#wire", "rotation": 90},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#wire", "rotation": 90}
+      }
+    }
+  ]
+}
