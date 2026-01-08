@@ -10,10 +10,6 @@ public class Edge {
     Node nodeOrigin;
     Node nodeEnd;
     double resistance;    // In Ohms (Ω)
-    double current;       // Calculated state (Amps)
+    double simulatedCurrent;       // Calculated state (Amps)
 
-    // Ohm's Law helper
-    public double getVoltageDrop() {
-        return current * resistance;
-    }
 }

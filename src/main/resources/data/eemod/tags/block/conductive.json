@@ -1,0 +1,8 @@
+{
+  "values": [
+    "eemod:wire_block",
+    "eemod:debug_voltage_source",
+    "eemod:resistor_block",
+    "minecraft:dirt"
+  ]
+}

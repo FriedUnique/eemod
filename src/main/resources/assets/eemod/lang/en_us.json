@@ -3,6 +3,7 @@
 
 
   "block.eemod.wire_block": "Wire Block",
+  "block.eemod.resistor_block": "Resistor Block",
   "block.eemod.debug_voltage_source": "Debug Voltage Source"
 
 }

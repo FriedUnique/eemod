@@ -175,6 +175,21 @@ public class Circuit {
             for(int idx = 0; idx < n; idx++) {
                 nodeList.get(idx).simulatedVoltage = x.get(idx);
             }
+
+            for (Edge edge : edgeEntities) {
+                // Get the solved voltages from the nodes
+                double vStart = edge.nodeOrigin.simulatedVoltage;
+                double vEnd   = edge.nodeEnd.simulatedVoltage;
+
+                double current = (vStart - vEnd) / edge.resistance;
+
+                // Store this in your edge object to display later
+                edge.simulatedCurrent = current;
+
+                System.out.println("Wire Current: " + current + "A");
+            }
+
+
         } catch (Exception e) {
             System.err.println("Circuit solver failed: " + e.getMessage());
         }

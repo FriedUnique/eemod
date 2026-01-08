@@ -207,7 +207,7 @@ public class NetworkManager {
     }
 
     public double getCurrentAt(BlockPos position){
-        return posToNode.get(position).simulatedVoltage/posToNode.get(position).internalRestistance;
+        return posToNode.get(position).getTotalFlow();
     }
 
     private void createEdges(Circuit circuit, Node centerNode, List<Node> neighbors) {
@@ -230,8 +230,8 @@ public class NetworkManager {
             circuit.addEdge(e);
 
             // Register connections for traversal
-//            centerNode.addConnection(e);
-//            neighbor.addConnection(e);
+            centerNode.connectedEdges.add(e);
+            neighbor.connectedEdges.add(e);
         }
     }
 

@@ -4,6 +4,9 @@ import net.friedunique.eemod.core.Components;
 
 import net.minecraft.core.BlockPos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Node {
     public Node(BlockPos pos){
         this(pos, "");
@@ -12,6 +15,7 @@ public class Node {
     public Node(BlockPos pos, String name){
         position=pos;
         this.name = name;
+        connectedEdges = new ArrayList<>();
     }
 
     public BlockPos position;    // Location in Minecraft
@@ -25,6 +29,15 @@ public class Node {
     public boolean isTouchingNegativeTerminal = false;
     public boolean isTouchingPositiveTerminal = false;
     public double knownCurrent;
+
+    public List<Edge> connectedEdges;
+
+    // Helper to see total activity (optional)
+    public double getTotalFlow() {
+        double sum = 0;
+        for(Edge e : connectedEdges) sum += Math.abs(e.simulatedCurrent);
+        return sum;
+    }
 
 
     //only for source

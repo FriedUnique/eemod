@@ -53,7 +53,8 @@ public class Wire extends ElectricalBlock {
     @Override
     public NodeDefinition getNodeDefinition(Level level, BlockPos pos) {
         boolean[] isTouching = checkNeighborTerminals(level, pos);
-        return new NodeDefinition(ComponentType.CONDUCTOR, "", 0.01, 0, isTouching[0], isTouching[1]);
+        // HAS TO BE NON ZERO!!!
+        return new NodeDefinition(ComponentType.CONDUCTOR, "", 0.000000001, 0, isTouching[0], isTouching[1]);
     }
 
 
