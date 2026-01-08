@@ -22,7 +22,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> WIRE_BLOCK = registerBlock("wire_block",
             () -> new Wire(BlockBehaviour.Properties.ofFullCopy(Blocks.TRIPWIRE).noCollission().noOcclusion()));
     public static final RegistryObject<Block> RESISTOR_BLOCK = registerBlock("resistor_block",
-            () -> new Wire(BlockBehaviour.Properties.ofFullCopy(Blocks.TRIPWIRE).noCollission().noOcclusion()));
+            () -> new Resistor(BlockBehaviour.Properties.ofFullCopy(Blocks.TRIPWIRE).noCollission().noOcclusion()));
 
     public static final RegistryObject<Block> DEBUG_VOLTAGE_SOURCE = registerBlock("debug_voltage_source",
             () -> new DebugVoltageSource(BlockBehaviour.Properties.of().noCollission().noOcclusion()));

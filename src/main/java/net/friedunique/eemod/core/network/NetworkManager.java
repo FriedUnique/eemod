@@ -102,6 +102,7 @@ public class NetworkManager {
 
         NodeDefinition nodeDefinition = block.getNodeDefinition(level, pos);
         Node newNode = new Node(pos);
+        newNode.name = nodeDefinition.name();
         newNode.type = nodeDefinition.type();
         newNode.internalRestistance = nodeDefinition.resistance();
         newNode.sourceVoltage = nodeDefinition.sourceVoltage();
@@ -129,7 +130,13 @@ public class NetworkManager {
         if (neighborCircuits.isEmpty()) {
             // SCENARIO A: Brand new isolated wire
             createNewCircuit(newNode);
-        } else {
+        } else if (neighborCircuits.size() == 1) {
+            // SCENARIO B: Extending an existing wire
+            Circuit existing = neighborCircuits.iterator().next();
+            addToCircuit(existing, newNode, neighborNodes.stream().map(posToNode::get).collect(Collectors.toList()));
+            System.out.println("Node added to a circuit!");
+        }
+        else{
             // SCENARIO C: Bridging two or more separate networks (MERGE)
             List<Node> validNeighborNodes = new ArrayList<>();
             for (BlockPos p : neighborNodes) {
@@ -139,6 +146,7 @@ public class NetworkManager {
             }
 
             mergeCircuits(neighborCircuits, newNode, validNeighborNodes);
+            System.out.println("Node bridging between two circuits!");
         }
     }
 
@@ -195,11 +203,11 @@ public class NetworkManager {
     }
 
     public double getVoltageAt(BlockPos position){
-        return 0;
+        return posToNode.get(position).simulatedVoltage;
     }
 
     public double getCurrentAt(BlockPos position){
-        return 0;
+        return posToNode.get(position).simulatedVoltage/posToNode.get(position).internalRestistance;
     }
 
     private void createEdges(Circuit circuit, Node centerNode, List<Node> neighbors) {
@@ -234,9 +242,9 @@ public class NetworkManager {
         posToCircuit.put(node.position, c);
     }
 
-    private void addToCircuit(Circuit c, Node node, Edge edge) {
+    private void addToCircuit(Circuit c, Node node, List<Node> neighborNodes) {
         c.addNode(node);
-        c.addEdge(edge);
+        createEdges(c, node, neighborNodes);
         posToCircuit.put(node.position, c);
     }
 

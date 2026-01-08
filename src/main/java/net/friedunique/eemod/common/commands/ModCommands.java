@@ -58,12 +58,14 @@ public class ModCommands {
         );
         dispatcher.register(
                 Commands.literal("ee")
-                        .then(Commands.literal("refresh")
+                        .then(Commands.literal("voltage")
                                 .executes(context -> {
 
 
                                     NetworkManager nm = NetworkManager.get(context.getSource().getLevel());
-                                    nm.refreshAll(context.getSource().getLevel());
+                                    assert context.getSource().getEntity() != null;
+                                    System.out.println(nm.getVoltageAt(context.getSource().getEntity().blockPosition()));
+
                                     return 1; // Success
                                 })
                         )

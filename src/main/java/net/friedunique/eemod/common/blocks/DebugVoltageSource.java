@@ -31,12 +31,13 @@ public class DebugVoltageSource extends ElectricalBlock {
 
     @Override
     public NodeDefinition getNodeDefinition(Level level, BlockPos pos) {
-        return new NodeDefinition(Components.ComponentType.CONDUCTOR, 0.1, 12);
+        return new NodeDefinition(Components.ComponentType.SOURCE, "SOURCE", 0.1, 12);
     }
 
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        System.out.println("HEYYYYYYYYY PLACED SOURCE-------");
         super.onPlace(state, level, pos, oldState, isMoving);
     }
 

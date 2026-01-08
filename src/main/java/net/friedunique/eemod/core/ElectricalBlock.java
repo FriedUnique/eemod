@@ -56,9 +56,11 @@ public abstract class ElectricalBlock extends Block {
 
 
 
-    public record NodeDefinition(ComponentType type, double resistance, double sourceVoltage, boolean isTouchingPositiveTerminal, boolean isTouchingNegativeTerminal, Node positiveNode, Node negativeNode) {
-        public NodeDefinition(ComponentType type, double resistance, double sourceVoltage, boolean isTouchingPositive, boolean isTouchingNegative) {this(type, resistance, sourceVoltage, isTouchingPositive, isTouchingNegative, null, null);}
-        public NodeDefinition(ComponentType type, double resistance, double sourceVoltage) {this(type, resistance, sourceVoltage, false, false, null, null);}
+    public record NodeDefinition(ComponentType type, String name, double resistance, double sourceVoltage, boolean isTouchingPositiveTerminal, boolean isTouchingNegativeTerminal, Node positiveNode, Node negativeNode) {
+        public NodeDefinition(ComponentType type, double resistance, double sourceVoltage, boolean isTouchingPositive, boolean isTouchingNegative) {this(type, "", resistance, sourceVoltage, isTouchingPositive, isTouchingNegative, null, null);}
+        public NodeDefinition(ComponentType type, String name, double resistance, double sourceVoltage, boolean isTouchingPositive, boolean isTouchingNegative) {this(type, name, resistance, sourceVoltage, isTouchingPositive, isTouchingNegative, null, null);}
+        public NodeDefinition(ComponentType type, double resistance, double sourceVoltage) {this(type, "", resistance, sourceVoltage, false, false, null, null);}
+        public NodeDefinition(ComponentType type, String name, double resistance, double sourceVoltage) {this(type, name, resistance, sourceVoltage, false, false, null, null);}
 
     }
 

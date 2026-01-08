@@ -15,24 +15,25 @@ public class Node {
     }
 
     public BlockPos position;    // Location in Minecraft
+    public Circuit parentCircuit;
+    public String name;
+    public Components.ComponentType type;
 
+    public double simulatedVoltage;
+    public double internalRestistance;
 
     public boolean isTouchingNegativeTerminal = false;
     public boolean isTouchingPositiveTerminal = false;
-    public Circuit parentCircuit;
-    public String name;
-    public double sourceVoltage;
     public double knownCurrent;
-    public double internalRestistance;
-    public Components.ComponentType type;
-
 
 
     //only for source
+    public double sourceVoltage;
     public Node negativeNode;
     public Node positiveNode;
 
     public void resetSolverData() {
+
         this.knownCurrent = 0;
     }
 }

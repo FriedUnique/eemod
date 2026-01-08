@@ -2,6 +2,7 @@ package net.friedunique.eemod.common.blocks;
 
 import net.friedunique.eemod.core.Components;
 import net.friedunique.eemod.core.ElectricalBlock;
+import net.friedunique.eemod.core.ElectricalBlock.NodeDefinition;
 import net.friedunique.eemod.core.IElectricalConductor;
 import net.friedunique.eemod.core.network.NetworkManager;
 import net.minecraft.core.BlockPos;
@@ -34,6 +35,7 @@ public class Resistor extends ElectricalBlock {
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        System.out.println("RESISTOR PLACED------");
         super.onPlace(state, level, pos, oldState, isMoving);
     }
 
@@ -45,9 +47,9 @@ public class Resistor extends ElectricalBlock {
     }
 
     @Override
-    public ElectricalBlock.NodeDefinition getNodeDefinition(Level level, BlockPos pos) {
+    public NodeDefinition getNodeDefinition(Level level, BlockPos pos) {
         boolean[] isTouching = checkNeighborTerminals(level, pos);
-        return new ElectricalBlock.NodeDefinition(Components.ComponentType.CONDUCTOR, 10, 0, isTouching[0], isTouching[1]);
+        return new NodeDefinition(Components.ComponentType.CONDUCTOR, "10 ohm resistance", 10, 0, isTouching[0], isTouching[1]);
     }
 
 

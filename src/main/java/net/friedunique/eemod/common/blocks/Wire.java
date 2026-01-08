@@ -45,8 +45,6 @@ public class Wire extends ElectricalBlock {
         super.onPlace(state, level, pos, oldState, isMoving);
     }
 
-
-
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
@@ -55,7 +53,7 @@ public class Wire extends ElectricalBlock {
     @Override
     public NodeDefinition getNodeDefinition(Level level, BlockPos pos) {
         boolean[] isTouching = checkNeighborTerminals(level, pos);
-        return new NodeDefinition(ComponentType.CONDUCTOR, 0.1, 0, isTouching[0], isTouching[1]);
+        return new NodeDefinition(ComponentType.CONDUCTOR, "", 0.01, 0, isTouching[0], isTouching[1]);
     }
 
 
