@@ -1,9 +1,10 @@
 package net.friedunique.eemod.common.blocks;
 
-import net.friedunique.eemod.core.Components;
+import net.friedunique.eemod.common.ModTags;
 import net.friedunique.eemod.core.Components.ComponentType;
 import net.friedunique.eemod.core.ElectricalBlock;
 
+import net.friedunique.eemod.core.network.Circuit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,6 +23,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -40,6 +43,17 @@ public class Wire extends ElectricalBlock {
                 .setValue(EAST, false).setValue(WEST, false));
     }
 
+
+
+    @Override
+    public NodeDefinition getNodeDefinition(Level level, BlockPos pos) {
+        boolean[] isTouching = checkNeighborTerminals(level, pos);
+        // HAS TO BE NON-ZERO!!!
+        return new NodeDefinition(ComponentType.CONDUCTOR, "", 0.000000001, isTouching[0], isTouching[1]);
+    }
+
+
+
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         super.onPlace(state, level, pos, oldState, isMoving);
@@ -50,25 +64,37 @@ public class Wire extends ElectricalBlock {
         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 
-    @Override
-    public NodeDefinition getNodeDefinition(Level level, BlockPos pos) {
-        boolean[] isTouching = checkNeighborTerminals(level, pos);
-        // HAS TO BE NON ZERO!!!
-        return new NodeDefinition(ComponentType.CONDUCTOR, "", 0.000000001, 0, isTouching[0], isTouching[1]);
-    }
+
+
+
+
+
+
+
+
 
 
     // ---- cosmetics ----
+    @Override
+    public void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, boolean isConnectable) {
+        int dx = neighborPos.getX()-pos.getX();
+        int dy = neighborPos.getY()-pos.getY();
+        int dz = neighborPos.getZ()-pos.getZ();
+
+        System.out.println("Cosmetics update because neightbor was placed");
+
+        state.setValue(getPropForDir(Direction.fromDelta(dx, dy, dz)), isConnectable);
+    }
+
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         return state.setValue(getPropForDir(direction), this.canConnectTo(neighborState));
     }
 
-
-    private boolean canConnectTo(BlockState state) {
-        // Connect if the neighbor is also this block
-        // purely visual
-        return state.getBlock() == ModBlocks.WIRE_BLOCK.get() || state.getBlock() == ModBlocks.DEBUG_VOLTAGE_SOURCE.get() || state.getBlock() == ModBlocks.RESISTOR_BLOCK.get();
+    @Override
+    public boolean canConnectTo(BlockState state) {
+        //visual
+        return state.is(ModTags.CONDUCTIVE_BLOCKS);
     }
 
     private BooleanProperty getPropForDir(Direction dir) {

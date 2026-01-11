@@ -1,7 +1,9 @@
 package net.friedunique.eemod.core.network;
 
-import net.friedunique.eemod.core.Components;
+
+import net.friedunique.eemod.core.Components.*;
 import net.minecraft.core.BlockPos;
+import org.checkerframework.checker.units.qual.A;
 import org.ejml.simple.SimpleMatrix;
 
 import java.util.*;
@@ -36,10 +38,8 @@ public class Circuit {
 
 
     public void refresh(){
-        List<Node> nodeList = new ArrayList<>(nodeEntities);
-        for(int i = 0; i<nodeEntities.size(); i++){
-            nodeList.get(i).resetSolverData();
-        }
+        // dont know if need, later probably
+        return;
     }
 
     // This is where your Solver will live
@@ -50,7 +50,7 @@ public class Circuit {
         List<Node> nodeList = new ArrayList<>(nodeEntities);
 
         // Reset solver data
-        for(Node node : nodeList) node.resetSolverData();
+//        for(Node node : nodeList) node.resetSolverData();
 
         SimpleMatrix G = new SimpleMatrix(n,n);
         SimpleMatrix i = new SimpleMatrix(n,1);
@@ -60,7 +60,7 @@ public class Circuit {
         // ==========================================================
         for (Node sourceNode : nodeList) {
 
-            if (sourceNode.type == Components.ComponentType.SOURCE) {
+            if (sourceNode.componentType == ComponentType.SOURCE) {
                 System.out.println("DEBUG: Found a Source Node at " + sourceNode.position);
 
                 Node posNode = sourceNode.positiveNode;
@@ -83,6 +83,9 @@ public class Circuit {
                 posNode.name = "Positive Node";
                 negNode.name = "Negative Node";
 
+                System.out.println("---->>>>> positive node pos " + posNode.position);
+                System.out.println("---->>>>> negative node pos " + negNode.position+"\n\n");
+
                 int u = nodeList.indexOf(posNode);
                 int v = nodeList.indexOf(negNode);
 
@@ -92,10 +95,35 @@ public class Circuit {
                 if (v == -1) System.out.println("  CRITICAL ERROR: Negative neighbor is not in this circuit!");
                 if (u == -1 || v == -1) continue;
 
-                // 3. Spannungsquelle <-> Stromquelle
-                // need to handle stromquelle as well
-                double conductance = 1.0 / sourceNode.internalRestistance;
-                double current = sourceNode.sourceVoltage * conductance;
+
+                double current;
+                double conductance;
+
+                if (sourceNode.sourceType.equals(SourceType.VOLTAGE)){
+                    // 3. Spannungsquelle <-> Stromquelle
+
+                    // ideal wenn widerstand möglichst tief, da ja in serie geschaltet
+                    conductance = 1.0 / sourceNode.internalRestistance;
+                    current = sourceNode.sourceVoltage * conductance;
+
+                }else if(sourceNode.sourceType.equals(SourceType.CURRENT)){
+                    System.out.println("------>  Source block is a current source");
+                    current = sourceNode.sourceCurrent;
+                    conductance = 0.0;
+
+//                    if (sourceNode.internalRestistance > 1e9) {
+//                        // ideal sources assign Double.positiveInfinity to their resistance
+//                        conductance = 0.0; // Ideal (R->infinty) 1/R = 0
+//                    } else {
+//                        conductance = 1.0 / sourceNode.internalRestistance;
+//                    }
+                }else{
+                    System.out.printf("[Circuit]------> CRITICAL ERROR: What type of source block is this?!?!? (%s), (%s)%n", sourceNode.position, sourceNode.name);
+                    System.out.println("");
+                    continue;
+                }
+
+
 
                 // 4. Inject Current (Vector i)
                 // Push current INTO positive, Pull current FROM negative
@@ -121,6 +149,9 @@ public class Circuit {
         for (Edge edge : edgeEntities) {
             int u = nodeList.indexOf(edge.nodeOrigin);
             int v = nodeList.indexOf(edge.nodeEnd);
+
+            if(edge.nodeOrigin.name.isEmpty()){edge.nodeOrigin.name = String.format("%d", u);}
+            if(edge.nodeEnd.name.isEmpty()){edge.nodeEnd.name = String.format("%d", v);}
 
             double leitwert = 1.0 / edge.resistance;
             if (u == -1) System.out.println("  CRITICAL ERROR: 1");
@@ -150,7 +181,7 @@ public class Circuit {
         int groundNodeIndex = -1;
 
         for(int idx=0; idx<n; idx++) {
-            if (nodeList.get(idx).isTouchingNegativeTerminal) {
+            if (nodeList.get(idx).isTouchingNegativeTerminal && !nodeList.get(idx).isTouchingPositiveTerminal) {
                 groundNodeIndex = idx;
                 break;
             }
@@ -176,6 +207,7 @@ public class Circuit {
                 nodeList.get(idx).simulatedVoltage = x.get(idx);
             }
 
+            // add the current to the edges
             for (Edge edge : edgeEntities) {
                 // Get the solved voltages from the nodes
                 double vStart = edge.nodeOrigin.simulatedVoltage;
@@ -186,8 +218,10 @@ public class Circuit {
                 // Store this in your edge object to display later
                 edge.simulatedCurrent = current;
 
-                System.out.println("Wire Current: " + current + "A");
+                System.out.println("Wire (" + edge.nodeOrigin.name + " - " + edge.nodeEnd.name + ") Current: " + current + " A ");
             }
+
+
 
 
         } catch (Exception e) {
@@ -204,7 +238,7 @@ public class Circuit {
 
         for (int i = 0; i < nodeEntities.size(); i++) {
             Node node = nodeList.get(i);
-            System.out.println("Node ("+i+") " + nodeList.get(i).name + " Voltage: " + node.simulatedVoltage);
+            System.out.printf("Node (%d) %s Voltage: %s", i, nodeList.get(i).name, node.simulatedVoltage);
         }
     }
 

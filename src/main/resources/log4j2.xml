@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%logger]: %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="net.minecraft" level="warn"/>
+        <Logger name="net.minecraftforge" level="warn"/>
+
+        <Logger name="net.friedunique.eemod" level="debug"/>
+
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

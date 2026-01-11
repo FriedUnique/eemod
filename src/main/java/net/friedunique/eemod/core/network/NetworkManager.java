@@ -1,11 +1,9 @@
 package net.friedunique.eemod.core.network;
 
-import net.friedunique.eemod.common.blocks.DebugVoltageSource;
+import net.friedunique.eemod.common.blocks.IdealVoltageSource;
 import net.friedunique.eemod.core.Components;
 import net.friedunique.eemod.core.ElectricalBlock;
 import net.friedunique.eemod.core.ElectricalBlock.NodeDefinition;
-import net.friedunique.eemod.core.IElectricalConductor;
-import net.friedunique.eemod.core.IVoltageSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -68,15 +66,15 @@ public class NetworkManager {
 
 
     private void updateSourceConnections(Level level){
-        List<Node> sourceNodes = posToNode.values().stream().filter(node -> node.type.equals(Components.ComponentType.SOURCE)).collect(Collectors.toList());
+        List<Node> sourceNodes = posToNode.values().stream().filter(node -> node.componentType.equals(Components.ComponentType.SOURCE)).collect(Collectors.toList());
         for(Node sourceNode : sourceNodes){
             BlockState state = level.getBlockState(sourceNode.position);
 
             // Safety Check: Is this actually our source block?
-            if (!(state.getBlock() instanceof DebugVoltageSource)) return;
+//            if (!(state.getBlock() instanceof ElectricalBlock electricalBlock && electricalBlock.type.equals()) ) return;
 
             // 2. Get the Facing Direction
-            Direction facing = state.getValue(DebugVoltageSource.FACING);
+            Direction facing = state.getValue(IdealVoltageSource.FACING); // should be ok for the current block as well for now
 
             // 3. Calculate Neighbor Positions
             // FRONT = Positive Terminal
@@ -103,9 +101,11 @@ public class NetworkManager {
         NodeDefinition nodeDefinition = block.getNodeDefinition(level, pos);
         Node newNode = new Node(pos);
         newNode.name = nodeDefinition.name();
-        newNode.type = nodeDefinition.type();
+        newNode.componentType = nodeDefinition.type();
         newNode.internalRestistance = nodeDefinition.resistance();
         newNode.sourceVoltage = nodeDefinition.sourceVoltage();
+        newNode.sourceCurrent = nodeDefinition.sourceCurrent();
+        newNode.sourceType = nodeDefinition.sourceType();
 
         posToNode.put(pos, newNode);
 
@@ -212,19 +212,19 @@ public class NetworkManager {
 
     private void createEdges(Circuit circuit, Node centerNode, List<Node> neighbors) {
         // do not connect source to itself ...
-        if (centerNode.type == Components.ComponentType.SOURCE) {
+        if (centerNode.componentType == Components.ComponentType.SOURCE) {
             return;
         }
 
         for (Node neighbor : neighbors) {
             // 2. If the NEIGHBOR is a source, do not create an edge to it!
-            if (neighbor.type == Components.ComponentType.SOURCE) {
+            if (neighbor.componentType == Components.ComponentType.SOURCE) {
                 continue;
             }
 
-            // 3. Normal Connection (Wire-to-Wire or Wire-to-Machine)
-            // This is safe to add.
+            // small fix dont know it will hold for ever...
             double edgeResistance = centerNode.internalRestistance + neighbor.internalRestistance;
+            edgeResistance*=0.5;
 
             Edge e = new Edge(centerNode, neighbor, edgeResistance);
             circuit.addEdge(e);

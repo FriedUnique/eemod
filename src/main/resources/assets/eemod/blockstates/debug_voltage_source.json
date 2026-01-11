@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "eemod:block/debug_voltage_source" },
-    "facing=south": { "model": "eemod:block/debug_voltage_source", "y": 180 },
-    "facing=west":  { "model": "eemod:block/debug_voltage_source", "y": 270 },
-    "facing=east":  { "model": "eemod:block/debug_voltage_source", "y": 90 }
-  }
-}

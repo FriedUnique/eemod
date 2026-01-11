@@ -1,16 +1,15 @@
 package net.friedunique.eemod.common.blocks;
 
+import net.friedunique.eemod.common.ModTags;
 import net.friedunique.eemod.core.Components;
 import net.friedunique.eemod.core.ElectricalBlock;
-import net.friedunique.eemod.core.ElectricalBlock.NodeDefinition;
-import net.friedunique.eemod.core.IElectricalConductor;
-import net.friedunique.eemod.core.network.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -23,19 +22,34 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 public class Resistor extends ElectricalBlock {
-    public Resistor(Properties properties) {
-        super(properties);
-    }
 
     public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
     public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
     public static final BooleanProperty EAST = BlockStateProperties.EAST;
     public static final BooleanProperty WEST = BlockStateProperties.WEST;
 
+    private double resistance;
+
+    public Resistor(Properties properties, double resistance) {
+        super(properties);
+
+        this.resistance = 10;
+
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(NORTH, false).setValue(SOUTH, false)
+                .setValue(EAST, false).setValue(WEST, false));
+    }
+
+    @Override
+    public NodeDefinition getNodeDefinition(Level level, BlockPos pos) {
+        boolean[] isTouching = checkNeighborTerminals(level, pos);
+        return new NodeDefinition(Components.ComponentType.LOAD, "10 ohm resistance", resistance, isTouching[0], isTouching[1]);
+    }
+
+
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        System.out.println("RESISTOR PLACED------");
         super.onPlace(state, level, pos, oldState, isMoving);
     }
 
@@ -46,24 +60,29 @@ public class Resistor extends ElectricalBlock {
         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 
-    @Override
-    public NodeDefinition getNodeDefinition(Level level, BlockPos pos) {
-        boolean[] isTouching = checkNeighborTerminals(level, pos);
-        return new NodeDefinition(Components.ComponentType.CONDUCTOR, "10 ohm resistance", 10, 0, isTouching[0], isTouching[1]);
-    }
+
 
 
     // ---- cosmetics ----
+
+
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         return state.setValue(getPropForDir(direction), this.canConnectTo(neighborState));
     }
 
+    @Override
+    public boolean canConnectTo(BlockState state) {
+        return state.is(ModTags.CONDUCTIVE_BLOCKS);
+    }
 
-    private boolean canConnectTo(BlockState state) {
-        // Connect if the neighbor is also this block
-        // purely visual
-        return state.getBlock() == ModBlocks.WIRE_BLOCK.get() || state.getBlock() == ModBlocks.DEBUG_VOLTAGE_SOURCE.get() || state.getBlock() == ModBlocks.RESISTOR_BLOCK.get();
+    @Override
+    public void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, boolean isConnectable) {
+        int dx = neighborPos.getX()-pos.getX();
+        int dy = neighborPos.getY()-pos.getY();
+        int dz = neighborPos.getZ()-pos.getZ();
+
+        state.setValue(getPropForDir(Direction.fromDelta(dx, dy, dz)), isConnectable);
     }
 
     private BooleanProperty getPropForDir(Direction dir) {

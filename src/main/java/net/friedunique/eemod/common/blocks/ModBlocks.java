@@ -6,7 +6,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -21,12 +20,18 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> WIRE_BLOCK = registerBlock("wire_block",
             () -> new Wire(BlockBehaviour.Properties.ofFullCopy(Blocks.TRIPWIRE).noCollission().noOcclusion()));
+
+
     public static final RegistryObject<Block> RESISTOR_BLOCK = registerBlock("resistor_block",
-            () -> new Resistor(BlockBehaviour.Properties.ofFullCopy(Blocks.TRIPWIRE).noCollission().noOcclusion()));
+            () -> new Resistor(BlockBehaviour.Properties.ofFullCopy(Blocks.TRIPWIRE).noCollission().noOcclusion(), 10d));
 
-    public static final RegistryObject<Block> DEBUG_VOLTAGE_SOURCE = registerBlock("debug_voltage_source",
-            () -> new DebugVoltageSource(BlockBehaviour.Properties.of().noCollission().noOcclusion()));
 
+
+    public static final RegistryObject<Block> IDEAL_VOLTAGE_SOURCE = registerBlock("ideal_voltage_source",
+            () -> new IdealVoltageSource(BlockBehaviour.Properties.of().noCollission().noOcclusion()));
+
+    public static final RegistryObject<Block> IDEAL_CURRENT_SOURCE = registerBlock("ideal_current_source",
+            () -> new IdealCurrentSource(BlockBehaviour.Properties.of().noCollission().noOcclusion()));
 
 
 

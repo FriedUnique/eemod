@@ -1,6 +1,7 @@
 package net.friedunique.eemod.core.network;
 
-import net.friedunique.eemod.core.Components;
+import net.friedunique.eemod.core.Components.SourceType;
+import net.friedunique.eemod.core.Components.ComponentType;
 
 import net.minecraft.core.BlockPos;
 
@@ -18,35 +19,47 @@ public class Node {
         connectedEdges = new ArrayList<>();
     }
 
+
+
+
     public BlockPos position;    // Location in Minecraft
     public Circuit parentCircuit;
     public String name;
-    public Components.ComponentType type;
+    public ComponentType componentType;
 
+    // values
     public double simulatedVoltage;
     public double internalRestistance;
 
-    public boolean isTouchingNegativeTerminal = false;
-    public boolean isTouchingPositiveTerminal = false;
-    public double knownCurrent;
-
-    public List<Edge> connectedEdges;
-
-    // Helper to see total activity (optional)
+    public double getSimulatedPowerUsage(){
+        // dont know if this is accurate
+        return simulatedVoltage*getTotalFlow();
+    }
+    // gemini fix
     public double getTotalFlow() {
+        // If it's a dead-end (1 connection), return that current.
+        if (connectedEdges.size() == 1) {
+            return Math.abs(connectedEdges.get(0).simulatedCurrent);
+        }
+
+        // If it's a pass-through (2 connections), the sum is double the real flow.
+        // We want the average flow through the node.
         double sum = 0;
         for(Edge e : connectedEdges) sum += Math.abs(e.simulatedCurrent);
-        return sum;
+
+        // Return the average to represent "Throughput"
+        return sum / connectedEdges.size();
     }
+    public boolean isTouchingNegativeTerminal = false;
+    public boolean isTouchingPositiveTerminal = false;
+    public List<Edge> connectedEdges;
 
 
     //only for source
+    public SourceType sourceType;
     public double sourceVoltage;
+    public double sourceCurrent;
     public Node negativeNode;
     public Node positiveNode;
 
-    public void resetSolverData() {
-
-        this.knownCurrent = 0;
-    }
 }

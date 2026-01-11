@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.friedunique.eemod.common.ModTags;
 import net.friedunique.eemod.core.network.Circuit;
 import net.friedunique.eemod.core.network.NetworkManager;
-import net.friedunique.eemod.core.test.CircuitTest;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;

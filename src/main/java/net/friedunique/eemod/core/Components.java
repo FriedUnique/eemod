@@ -6,4 +6,10 @@ public class Components {
         CONDUCTOR,
         LOAD
     }
+
+    public enum SourceType {
+        VOLTAGE,
+        CURRENT,
+        NONE
+    }
 }

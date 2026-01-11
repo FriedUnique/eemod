@@ -12,37 +12,37 @@ public class CircuitTest {
 
         Circuit circuit = new Circuit();
         Node n0 = new Node(new BlockPos(0,0,0), " (0) Battery");
-        n0.type = Components.ComponentType.SOURCE;
+        n0.componentType = Components.ComponentType.SOURCE;
         n0.sourceVoltage = 12;
         n0.internalRestistance = 0.1;
 
         Node n1 = new Node(new BlockPos(0,0,1), " (1) Positive terminal node");
         n1.internalRestistance = 0.01;
-        n1.type = Components.ComponentType.CONDUCTOR;
+        n1.componentType = Components.ComponentType.CONDUCTOR;
         n1.isTouchingPositiveTerminal = true;
         n1.isTouchingNegativeTerminal = false;
 
         Node n2 = new Node(new BlockPos(1,0,1), "2");
         n2.internalRestistance = 0.01;
-        n2.type = Components.ComponentType.CONDUCTOR;
+        n2.componentType = Components.ComponentType.CONDUCTOR;
         n2.isTouchingPositiveTerminal = false;
         n2.isTouchingNegativeTerminal = false;
 
         Node n3 = new Node(new BlockPos(1,0,0), "3");
         n3.internalRestistance = 0.01;
-        n3.type = Components.ComponentType.CONDUCTOR;
+        n3.componentType = Components.ComponentType.CONDUCTOR;
         n3.isTouchingPositiveTerminal = false;
         n3.isTouchingNegativeTerminal = false;
 
         Node n4 = new Node(new BlockPos(1,0,-1), "4");
         n4.internalRestistance = 0.01;
-        n4.type = Components.ComponentType.CONDUCTOR;
+        n4.componentType = Components.ComponentType.CONDUCTOR;
         n4.isTouchingPositiveTerminal = false;
         n4.isTouchingNegativeTerminal = false;
 
         Node n5 = new Node(new BlockPos(0,0,-1), " (5) Negative terminal node gnd");
         n5.internalRestistance = 0.01;
-        n5.type = Components.ComponentType.CONDUCTOR;
+        n5.componentType = Components.ComponentType.CONDUCTOR;
         n5.isTouchingNegativeTerminal = true;
         n5.isTouchingPositiveTerminal = false;
 
@@ -97,8 +97,8 @@ public class CircuitTest {
 
         // B. Inject Current (I = V / R)
         double current = sourceVoltage / internalRes; // 120 Amps
-        n0.knownCurrent += current;  // Push into Top
-        n1.knownCurrent -= current;  // Pull from Bottom
+//        n0.knownCurrent += current;  // Push into Top
+//        n1.knownCurrent -= current;  // Pull from Bottom
 
         // --- STEP 4: Add the Load (10 Ohm Resistor) ---
         // This is physically connected between the Top and Bottom wires
