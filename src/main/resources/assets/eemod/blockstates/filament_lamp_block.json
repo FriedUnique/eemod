@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "light_level=0":  { "model": "eemod:block/filament_lamp_off" },
+    "light_level=1":  { "model": "eemod:block/filament_lamp_low" },
+    "light_level=2":  { "model": "eemod:block/filament_lamp_low" },
+    "light_level=3":  { "model": "eemod:block/filament_lamp_low" },
+    "light_level=4":  { "model": "eemod:block/filament_lamp_low" },
+    "light_level=5":  { "model": "eemod:block/filament_lamp_low" },
+    "light_level=6":  { "model": "eemod:block/filament_lamp_medium" },
+    "light_level=7":  { "model": "eemod:block/filament_lamp_medium" },
+    "light_level=8":  { "model": "eemod:block/filament_lamp_medium" },
+    "light_level=9":  { "model": "eemod:block/filament_lamp_medium" },
+    "light_level=10": { "model": "eemod:block/filament_lamp_medium" },
+    "light_level=11": { "model": "eemod:block/filament_lamp_full" },
+    "light_level=12": { "model": "eemod:block/filament_lamp_full" },
+    "light_level=13": { "model": "eemod:block/filament_lamp_full" },
+    "light_level=14": { "model": "eemod:block/filament_lamp_full" },
+    "light_level=15": { "model": "eemod:block/filament_lamp_full" }
+  }
+}

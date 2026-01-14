@@ -54,7 +54,7 @@ public class IdealCurrentSource extends ElectricalBlock {
     }
 
     @Override
-    public void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, boolean isConnectable) {
+    public void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, Level level, boolean isConnectable) {
 
     }
 

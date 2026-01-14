@@ -5,6 +5,6 @@
   "block.eemod.wire_block": "Wire Block",
   "block.eemod.resistor_block": "Resistor Block",
   "block.eemod.ideal_voltage_source": "Ideal Voltage Source",
-  "block.eemod.ideal_current_source": "Ideal Current Source"
-
+  "block.eemod.ideal_current_source": "Ideal Current Source",
+  "block.eemod.filament_lamp_block": "Test Lamp"
 }

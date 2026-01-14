@@ -7,6 +7,8 @@ import net.friedunique.eemod.core.network.Node;
 import net.friedunique.eemod.core.network.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -35,21 +37,14 @@ public abstract class ElectricalBlock extends Block {
 
     }
 
+
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         if (!level.isClientSide) {
             NetworkManager.get(level).removeNode(pos);
-            updateCosmeticConnection(pos, level, state);
+//            updateCosmeticConnection(pos, level, state);
         }
         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
-    }
-
-
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighborPos) {
-        updateCosmetics(state, pos, neighborPos, this.canConnectTo(level.getBlockState(neighborPos)));
-
-        super.onNeighborChange(state, level, pos, neighborPos);
     }
 
 
@@ -59,7 +54,7 @@ public abstract class ElectricalBlock extends Block {
             BlockState neighborState = level.getBlockState(neighborPos);
 
             if(neighborState.is(ModTags.CONDUCTIVE_BLOCKS)){
-                updateCosmetics(state, pos, neighborPos, canConnectTo(neighborState));
+                updateCosmetics(state, pos, neighborPos, level, canConnectTo(neighborState));
             }
         }
     }
@@ -82,22 +77,26 @@ public abstract class ElectricalBlock extends Block {
     }
 
     public abstract boolean canConnectTo(BlockState state);
-    public abstract void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, boolean isConnectable);
+    public abstract void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, Level level, boolean isConnectable);
     public abstract NodeDefinition getNodeDefinition(Level level, BlockPos pos);
 
 
 
-    public record NodeDefinition(ComponentType type, SourceType sourceType, String name, double resistance, double sourceVoltage, double sourceCurrent, boolean isTouchingPositiveTerminal, boolean isTouchingNegativeTerminal, Node positiveNode, Node negativeNode) {
+    public record NodeDefinition(ComponentType type, SourceType sourceType, String name, double resistance, double sourceVoltage, double sourceCurrent, boolean isTouchingPositiveTerminal, boolean isTouchingNegativeTerminal, double heatCoefficient, double powerUsage, Node positiveNode, Node negativeNode) {
         // wire and resistors
-        public NodeDefinition(ComponentType type, String name, double resistance, boolean isTouchingPositive, boolean isTouchingNegative) {this(type, SourceType.NONE, name, resistance, 0d, 0d, isTouchingPositive, isTouchingNegative, null, null);}
-        public NodeDefinition(ComponentType type, double resistance, boolean isTouchingPositive, boolean isTouchingNegative) {this(type, SourceType.NONE, "", resistance, 0d, 0d, isTouchingPositive, isTouchingNegative, null, null);}
+        public NodeDefinition(ComponentType type, String name, double resistance, boolean isTouchingPositive, boolean isTouchingNegative) {this(type, SourceType.NONE, name, resistance, 0d, 0d, isTouchingPositive, isTouchingNegative, 0, 0, null, null);}
+        public NodeDefinition(ComponentType type, double resistance, boolean isTouchingPositive, boolean isTouchingNegative) {this(type, SourceType.NONE, "", resistance, 0d, 0d, isTouchingPositive, isTouchingNegative, 0, 0, null, null);}
+        //public NodeDefinition(ComponentType type, double resistance, double heatCoefficient, double powerUsage, boolean isTouchingPositive, boolean isTouchingNegative) {this(type, SourceType.NONE, "", resistance, 0d, 0d, isTouchingPositive, isTouchingNegative, heatCoefficient, powerUsage, null, null);}
 
         // sources
-        public NodeDefinition(ComponentType componentType, SourceType sourceType, String name, double resistance, double sourceVoltage, double sourceCurrent) {this(componentType, sourceType, name, resistance, sourceVoltage, sourceCurrent, false, false, null, null);}
-        public NodeDefinition(ComponentType componentType, SourceType sourceType, double resistance, double sourceVoltage, double sourceCurrent) {this(componentType, sourceType, "", resistance, sourceVoltage, sourceCurrent, false, false, null, null);}
+        public NodeDefinition(ComponentType componentType, SourceType sourceType, String name, double resistance, double sourceVoltage, double sourceCurrent) {this(componentType, sourceType, name, resistance, sourceVoltage, sourceCurrent, false, false, 0, 0, null, null);}
+        public NodeDefinition(ComponentType componentType, SourceType sourceType, double resistance, double sourceVoltage, double sourceCurrent) {this(componentType, sourceType, "", resistance, sourceVoltage, sourceCurrent, false, false, 0, 0, null, null);}
 
 
-        // etc...
+        // Lamp etc
+        public NodeDefinition(ComponentType type, String name, double resistance, double heatCoefficient, double powerUsage, boolean isTouchingPositive, boolean isTouchingNegative) {this(type, SourceType.NONE, name, resistance, 0d, 0d, isTouchingPositive, isTouchingNegative, heatCoefficient, powerUsage, null, null);}
+
+
     }
 
 

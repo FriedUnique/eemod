@@ -7,9 +7,10 @@ public class Edge {
         this.resistance = resistance;
     }
 
-    Node nodeOrigin;
-    Node nodeEnd;
-    double resistance;    // In Ohms (Ω)
-    double simulatedCurrent;       // Calculated state (Amps)
+    public Node nodeOrigin;
+    public Node nodeEnd;
+    public double resistance;    // In Ohms (Ω)
+    public double simulatedCurrent;       // Calculated state (Amps)
+    public double simulatedEdgeVoltage;
 
 }

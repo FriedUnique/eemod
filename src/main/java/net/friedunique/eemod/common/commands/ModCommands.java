@@ -67,6 +67,8 @@ public class ModCommands {
                                     NetworkManager nm = NetworkManager.get(context.getSource().getLevel());
                                     double voltage = nm.getVoltageAt(pos);
                                     context.getSource().sendSystemMessage(Component.literal("Voltage: " + String.format("%.2f", voltage) + "V"));
+//                                    context.getSource().sendSystemMessage(Component.literal(Double.toString(nm.getPosToNode().get(pos).connectedEdges.get(0).simulatedEdgeVoltage)));
+//                                    context.getSource().sendSystemMessage(Component.literal(Double.toString(nm.getPosToNode().get(pos).connectedEdges.get(1).simulatedEdgeVoltage)));
 
                                     return 1;
                                 })
@@ -97,7 +99,9 @@ public class ModCommands {
 
                                     NetworkManager nm = NetworkManager.get(context.getSource().getLevel());
                                     double current = nm.getCurrentAt(pos);
+
                                     context.getSource().sendSystemMessage(Component.literal("Current: " + String.format("%.2f", current) + "A"));
+
 
                                     return 1;
                                 })

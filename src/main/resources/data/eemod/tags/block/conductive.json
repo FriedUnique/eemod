@@ -4,6 +4,7 @@
     "eemod:ideal_voltage_source",
     "eemod:ideal_current_source",
     "eemod:resistor_block",
+    "eemod:filament_lamp_block",
     "minecraft:dirt"
   ]
 }

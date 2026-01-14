@@ -77,7 +77,7 @@ public class Resistor extends ElectricalBlock {
     }
 
     @Override
-    public void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, boolean isConnectable) {
+    public void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, Level level, boolean isConnectable) {
         int dx = neighborPos.getX()-pos.getX();
         int dy = neighborPos.getY()-pos.getY();
         int dz = neighborPos.getZ()-pos.getZ();

@@ -3,8 +3,6 @@ package net.friedunique.eemod.common.blocks;
 import net.friedunique.eemod.common.ModTags;
 import net.friedunique.eemod.core.Components.ComponentType;
 import net.friedunique.eemod.core.ElectricalBlock;
-
-import net.friedunique.eemod.core.network.Circuit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
@@ -12,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,7 +20,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -76,19 +72,22 @@ public class Wire extends ElectricalBlock {
 
     // ---- cosmetics ----
     @Override
-    public void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, boolean isConnectable) {
+    public void updateCosmetics(BlockState state, BlockPos pos, BlockPos neighborPos, Level level, boolean isConnectable) {
         int dx = neighborPos.getX()-pos.getX();
         int dy = neighborPos.getY()-pos.getY();
         int dz = neighborPos.getZ()-pos.getZ();
 
-        System.out.println("Cosmetics update because neightbor was placed");
+        Direction dir = Direction.fromDelta(dx, dy, dz);
 
-        state.setValue(getPropForDir(Direction.fromDelta(dx, dy, dz)), isConnectable);
+        BlockState newState = state.setValue(getPropForDir(dir), isConnectable);
+        if (state != newState) {
+            level.setBlock(pos, newState, 2);
+        }
     }
-
+//
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        return state.setValue(getPropForDir(direction), this.canConnectTo(neighborState));
+        return state.setValue(getPropForDir(direction), canConnectTo(neighborState));
     }
 
     @Override
@@ -112,9 +111,9 @@ public class Wire extends ElectricalBlock {
     }
 
 
-    @Override
-    public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return Shapes.empty(); // Player walks right through it
-    }
+//    @Override
+//    public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+//        return Shapes.empty(); // Player walks right through it
+//    }
 
 }

@@ -213,10 +213,12 @@ public class Circuit {
                 double vStart = edge.nodeOrigin.simulatedVoltage;
                 double vEnd   = edge.nodeEnd.simulatedVoltage;
 
+                double edgeVoltage = vStart+vEnd;
                 double current = (vStart - vEnd) / edge.resistance;
 
                 // Store this in your edge object to display later
                 edge.simulatedCurrent = current;
+                edge.simulatedEdgeVoltage = edgeVoltage;
 
                 System.out.println("Wire (" + edge.nodeOrigin.name + " - " + edge.nodeEnd.name + ") Current: " + current + " A ");
             }
@@ -238,7 +240,7 @@ public class Circuit {
 
         for (int i = 0; i < nodeEntities.size(); i++) {
             Node node = nodeList.get(i);
-            System.out.printf("Node (%d) %s Voltage: %s", i, nodeList.get(i).name, node.simulatedVoltage);
+            System.out.printf("Node (%d) %s Voltage: %s \n", i, nodeList.get(i).name, node.simulatedVoltage);
         }
     }
 

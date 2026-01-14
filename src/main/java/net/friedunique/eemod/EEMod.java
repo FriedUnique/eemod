@@ -3,6 +3,7 @@ package net.friedunique.eemod;
 import com.mojang.logging.LogUtils;
 import net.friedunique.eemod.common.blocks.ModBlocks;
 import net.friedunique.eemod.common.commands.ModCommands;
+import net.friedunique.eemod.common.entities.ModBlockEntities;
 import net.friedunique.eemod.common.items.ModItems;
 import net.friedunique.eemod.core.network.NetworkManager;
 import net.minecraft.client.Minecraft;
@@ -50,6 +51,7 @@ public class EEMod
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);

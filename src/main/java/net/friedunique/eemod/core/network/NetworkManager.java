@@ -38,8 +38,8 @@ public class NetworkManager {
         return new ArrayList<>(circuits);
     }
 
-    public final List<Node> getNodes(){
-        return new ArrayList<>(posToNode.values());
+    public final Map<BlockPos, Node> getPosToNode(){
+        return posToNode;
     }
 
     private boolean updateAll = false;
@@ -103,9 +103,13 @@ public class NetworkManager {
         newNode.name = nodeDefinition.name();
         newNode.componentType = nodeDefinition.type();
         newNode.internalRestistance = nodeDefinition.resistance();
+        newNode.temperatureCoefficient = nodeDefinition.heatCoefficient();
+        newNode.powerUsage = nodeDefinition.powerUsage();
+
         newNode.sourceVoltage = nodeDefinition.sourceVoltage();
         newNode.sourceCurrent = nodeDefinition.sourceCurrent();
         newNode.sourceType = nodeDefinition.sourceType();
+
 
         posToNode.put(pos, newNode);
 
@@ -134,7 +138,6 @@ public class NetworkManager {
             // SCENARIO B: Extending an existing wire
             Circuit existing = neighborCircuits.iterator().next();
             addToCircuit(existing, newNode, neighborNodes.stream().map(posToNode::get).collect(Collectors.toList()));
-            System.out.println("Node added to a circuit!");
         }
         else{
             // SCENARIO C: Bridging two or more separate networks (MERGE)
@@ -146,14 +149,12 @@ public class NetworkManager {
             }
 
             mergeCircuits(neighborCircuits, newNode, validNeighborNodes);
-            System.out.println("Node bridging between two circuits!");
         }
     }
 
 
 
     public void removeNode(BlockPos pos){
-        System.out.println("REMOVE BLOCK CALLED");
         if(!posToCircuit.containsKey(pos)){
             return;
         }
@@ -177,13 +178,15 @@ public class NetworkManager {
         }
 
         // Handle the Grid Logic
-        if (neighborCircuits.isEmpty()) {
+        if (thisCircuit.getNodes().size() == 1) {
             // SCENARIO A: Last node in a wire
             circuits.remove(thisCircuit);
+
             posToNode.remove(pos);
         } else if (neighborCircuits.size() == 1) {
             // SCENARIO B: Removing a node from an exsisting wire
             thisCircuit.removeNode(pos);
+            posToNode.remove(pos);
         } else {
             // SCENARIO C: Bridging two or more separate networks (MERGE)
             unmergeCircuits(thisCircuit, pos, connectedNeighbors);

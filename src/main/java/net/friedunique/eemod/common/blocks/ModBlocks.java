@@ -34,6 +34,10 @@ public class ModBlocks {
             () -> new IdealCurrentSource(BlockBehaviour.Properties.of().noCollission().noOcclusion()));
 
 
+    public static final RegistryObject<Block> FILAMENT_LAMP_BLOCK = registerBlock("filament_lamp_block",
+            () -> new FilamentLamp(BlockBehaviour.Properties.of()));
+
+
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
